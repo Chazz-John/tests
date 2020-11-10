@@ -1,9 +1,14 @@
 package com.zhao.shirospringboot.controller;
 
 
+import com.zhao.shirospringboot.config.PwdConfig;
+import com.zhao.shirospringboot.entity.UserInfo;
+import com.zhao.shirospringboot.service.UserInfoService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class Index {
+
+    @Autowired
+    UserInfoService userService;
 
     @RequestMapping(value = {"/","/index"})
     public String index(Model model) {
@@ -31,7 +39,10 @@ public class Index {
     public String login(Model model) {
         return "login";
     }
-
+    @RequestMapping("/register")
+    public String register(Model model) {
+        return "registration";
+    }
     @RequestMapping("/toLogin")
     public String toLogin(String username,String pwd,Model model) {
         Subject subject = SecurityUtils.getSubject();
@@ -47,4 +58,23 @@ public class Index {
             return "login";
         }
     }
+
+    @RequestMapping("/toRegister")
+    public String toRegister(String username,String pwd, Integer roleId ,Model model) {
+        UserInfo users = userService.findUserInfoByName(username);
+        if (users!=null){
+            model.addAttribute("msg","对不起,你设置的账号已存在!");
+            return "registration";
+        }
+        String salt = new SecureRandomNumberGenerator().nextBytes().toHex();
+        UserInfo info = new UserInfo(null, username, pwd, username, roleId);
+        String s = new PwdConfig().getPwd(username,pwd,username);
+        info.setPassword(s);
+        info.setSalt(username);
+        userService.addUserInfo(info);
+        // model.addAttribute("username",user.getUserName());
+        // model.addAttribute("pwd",user.getPassword());
+        return "login";
+    }
+
 }

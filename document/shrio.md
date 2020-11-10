@@ -196,15 +196,11 @@
    log.info("User [" + currentUser.getPrincipal() + "] logged in successfully.");
    ```
 
-   
-
 7. 注销
 
    ```java
    currentUser.logout();
    ```
-
-   
 
 8. 总览
 
@@ -293,6 +289,4 @@
    
            System.exit(0);
    ```
-
-   
 

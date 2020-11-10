@@ -198,94 +198,93 @@
 
         ```java
         package com.zhao.shirospringboot.config;
-        
-   import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+        import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
         import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
         import org.springframework.beans.factory.annotation.Qualifier;
         import org.springframework.context.annotation.Bean;
         import org.springframework.context.annotation.Configuration;
-        
         import java.util.LinkedHashMap;
         import java.util.Map;
-        
-        /**
-         * @author chazz
-         */
-        @Configuration
-        public class ShiroConfig {
-        
-                /**
-                 * subject -> ShiroFilterFactoryBean
-                 * */
-                @Bean(name = "shiroFilterFactoryBean")
-                public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("manager") DefaultWebSecurityManager manager){
-                    ShiroFilterFactoryBean subject = new ShiroFilterFactoryBean();
-                    //设置安全管理器
-                    subject.setSecurityManager(manager);
-                    //添加shiro的内部过滤器
-                    /*
-                        权限标识:相对于请求而言
-                        anno:无需认证就可以访问
-                        authc:必须认证才可以访问
-                        user:必须拥有"记住我"功能才能用
-                        perm:拥有对某个资源的权限才能放问
-                        role:拥有某个角色的权限才能访问
-                    */
-                    Map<String, String> filterChainDefinitionMap= new LinkedHashMap<>();
-                    filterChainDefinitionMap.put("/user/*","authc");
-                    subject.setFilterChainDefinitionMap(filterChainDefinitionMap);
-                    subject.setLoginUrl("/login");
-                    return subject;
-                }
-        
-                /**
-                 * securityManager -> DefaultWebSecurityManager
-                 * */
-                @Bean(name = "manager")
-                public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("userRealm") UserRealm realm){
-                    DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-                    //关联UserRealm
-                    securityManager.setRealm(realm);
-                    return securityManager;
-                }
-        
-                /**
-                 * realm->手动实现,自己自定义类:第一步
-                 * */
-                @Bean
-                public UserRealm userRealm(){
-                    return new UserRealm();
-                }
-        }
+         
+         /**
+          * @author chazz
+          */
+         @Configuration
+         public class ShiroConfig {
+         
+                 /**
+                  * subject -> ShiroFilterFactoryBean
+                  * */
+                 @Bean(name = "shiroFilterFactoryBean")
+                 public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("manager") DefaultWebSecurityManager manager){
+                     ShiroFilterFactoryBean subject = new ShiroFilterFactoryBean();
+                     //设置安全管理器
+                     subject.setSecurityManager(manager);
+                     //添加shiro的内部过滤器
+                     /*
+                         权限标识:相对于请求而言
+                         anno:无需认证就可以访问
+                         authc:必须认证才可以访问
+                         user:必须拥有"记住我"功能才能用
+                         perm:拥有对某个资源的权限才能放问
+                         role:拥有某个角色的权限才能访问
+                     */
+                     Map<String, String> filterChainDefinitionMap= new LinkedHashMap<>();
+                     filterChainDefinitionMap.put("/user/*","authc");
+                     subject.setFilterChainDefinitionMap(filterChainDefinitionMap);
+                     subject.setLoginUrl("/login");
+                     return subject;
+                 }
+         
+                 /**
+                  * securityManager -> DefaultWebSecurityManager
+                  * */
+                 @Bean(name = "manager")
+                 public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("userRealm") UserRealm realm){
+                     DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+                     //关联UserRealm
+                     securityManager.setRealm(realm);
+                     return securityManager;
+                 }
+         
+                 /**
+                  * realm->手动实现,自己自定义类:第一步
+                  * */
+                 @Bean
+                 public UserRealm userRealm(){
+                     return new UserRealm();
+                 }
+         }
+         ```
         ```
         
-      - 在controller类中接收前端的用户登陆信息，并将用户信息交给shiro处理
+         - 在controller类中接收前端的用户登陆信息，并将用户信息交给shiro处理
       
-        ```java
-        	@RequestMapping("/toLogin")
-            public String toLogin(String username,String pwd,Model model) {
-                //要对subject进行认证，就要首先获取到当前的subject对象
-                //通过之前的例子可以看到，subject需要securityUtils类获取
-                //这个流程在官网的例子中可以看到
-                Subject subject = SecurityUtils.getSubject();
-                UsernamePasswordToken token = new UsernamePasswordToken(username, pwd);
-                try {
-                    //这里只是将用户信息交给shiro，并为进行信息认证，信息的认证在UserRealm中进行，如果UserRealm中不做出来，则任何用户信息都会报错。
-                    subject.login(token);
-                    return "index";
-                }catch (UnknownAccountException e) {
-                    model.addAttribute("msg","用户名不存在！");
-                    return "login";
-                }catch (IncorrectCredentialsException e){
-                    model.addAttribute("msg","用户名或密码错误");
-                    return "login";
-                }
-            }
-        ```
+           ```java
+           @RequestMapping("/toLogin")
+               public String toLogin(String username,String pwd,Model model) {
+                   //要对subject进行认证，就要首先获取到当前的subject对象
+                   //通过之前的例子可以看到，subject需要securityUtils类获取
+                   //这个流程在官网的例子中可以看到
+                   Subject subject = SecurityUtils.getSubject();
+                   UsernamePasswordToken token = new UsernamePasswordToken(username, pwd);
+                   try {
+                       //这里只是将用户信息交给shiro，并为进行信息认证，信息的认证在UserRealm中进行，如果UserRealm中不做出来，则任何用户信息都会报错。
+                       subject.login(token);
+                       return "index";
+                   }catch (UnknownAccountException e) {
+                       model.addAttribute("msg","用户名不存在！");
+                       return "login";
+                   }catch (IncorrectCredentialsException e){
+                       model.addAttribute("msg","用户名或密码错误");
+                       return "login";
+                   }
+               }
+           ```
       
       - 在`UserRealm`中的`doGetAuthenticationInfo`方法中进行用户信息认证，这里先写死帐号密码，进行测试。
       
-        ``` java
+        ```java
         package com.zhao.shirospringboot.config;
         
         import org.apache.shiro.authc.*;
@@ -318,3 +317,5 @@
             }
         }
         ```
+      
+        

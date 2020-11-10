@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:shiro="http://www.thymeleaf.org/thymeleaf-extras-shiro">
+<head>
+    <title>registration</title>
+</head>
+<body>
+
+<form th:action="@{/toRegister}" method="post">
+    <p th:text="${msg}" style="color: red"></p>
+    <label for="username">用户名：</label>
+    <input name="username" type="text" id="username" value="">
+    <label for="pwd">密码：</label>
+    <input name="pwd" type="password" id="pwd" value="">
+    <label>选择注册账户类型:</label>
+    <input type="radio" name="roleId" value="1">普通账号
+    <input type="radio" name="roleId" value="2">管理员账号
+    <button type="submit">注册</button>
+</form>
+</body>
+</html>
