@@ -1,7 +1,6 @@
 package com.zhao.shirospringboot.controller;
 
 
-import com.zhao.shirospringboot.config.PwdConfig;
 import com.zhao.shirospringboot.entity.UserInfo;
 import com.zhao.shirospringboot.service.UserInfoService;
 import org.apache.shiro.SecurityUtils;
@@ -68,8 +67,8 @@ public class Index {
         }
         String salt = new SecureRandomNumberGenerator().nextBytes().toHex();
         UserInfo info = new UserInfo(null, username, pwd, salt, roleId);
-        String s = new PwdConfig().getPwd(username,pwd,salt);
-        info.setPassword(s);
+        // String s = new PwdConfig().getPwd(username,pwd,salt);
+        // info.setPassword(s);
         userService.addUserInfo(info);
         // model.addAttribute("username",info.getUserName());
         // model.addAttribute("pwd",user.getPassword());

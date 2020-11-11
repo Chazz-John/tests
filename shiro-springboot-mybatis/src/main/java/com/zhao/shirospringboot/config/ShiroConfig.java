@@ -58,7 +58,7 @@ public class ShiroConfig {
         public UserRealm userRealm(){
             UserRealm userRealm = new UserRealm();
             //设置加密方式
-            userRealm.setCredentialsMatcher(hashedCredentialsMatcher());
+            // userRealm.setCredentialsMatcher(hashedCredentialsMatcher());
             System.out.println("加密注入成功");
             return userRealm;
         }
@@ -66,16 +66,16 @@ public class ShiroConfig {
         /**
          * 配置匹配器
          * */
-        @Bean
-        public HashedCredentialsMatcher hashedCredentialsMatcher(){
-            HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
-            //设置加密次数
-            matcher.setHashAlgorithmName("MD5");//散列算法:这里使用MD5算法;
-            System.out.println("设置加密方式->md5");
-            //设置加密迭代的次数
-            matcher.setHashIterations(2);
-            //设置加密的编码: true为hex编码,false为base64编码
-            matcher.setStoredCredentialsHexEncoded(true);
-            return matcher;
-        }
+        // @Bean
+        // public HashedCredentialsMatcher hashedCredentialsMatcher(){
+        //     HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
+        //     //设置加密次数
+        //     matcher.setHashAlgorithmName("MD5");//散列算法:这里使用MD5算法;
+        //     System.out.println("设置加密方式->md5");
+        //     //设置加密迭代的次数
+        //     matcher.setHashIterations(2);
+        //     //设置加密的编码: true为hex编码,false为base64编码
+        //     matcher.setStoredCredentialsHexEncoded(true);
+        //     return matcher;
+        // }
 }

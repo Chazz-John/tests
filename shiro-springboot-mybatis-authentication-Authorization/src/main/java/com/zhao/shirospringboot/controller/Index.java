@@ -6,12 +6,15 @@ import com.zhao.shirospringboot.entity.UserInfo;
 import com.zhao.shirospringboot.service.UserInfoService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @author chazz
@@ -23,8 +26,7 @@ public class Index {
     UserInfoService userService;
 
     @RequestMapping(value = {"/","/index"})
-    public String index(Model model) {
-        model.addAttribute("msg","hello,shrio");
+    public String index() {
         return "index";
     }
     @RequestMapping("/user/add")
@@ -49,6 +51,10 @@ public class Index {
         UsernamePasswordToken token = new UsernamePasswordToken(username, pwd);
         try {
             subject.login(token);
+            Subject current = SecurityUtils.getSubject();
+            Session session = current.getSession();
+            String s = "hello,"+token.getUsername()+",欢迎使用shrio";
+            session.setAttribute("logined", s );
             return "index";
         }catch (UnknownAccountException e) {
             model.addAttribute("msg","用户名不存在！");
@@ -67,12 +73,25 @@ public class Index {
             return "registration";
         }
         String salt = new SecureRandomNumberGenerator().nextBytes().toHex();
-        UserInfo info = new UserInfo(null, username, pwd, salt, roleId);
+        UserInfo info = new UserInfo(null, username, pwd, salt, roleId,null,null);
         String s = new PwdConfig().getPwd(username,pwd,salt);
         info.setPassword(s);
         userService.addUserInfo(info);
         // model.addAttribute("username",info.getUserName());
         // model.addAttribute("pwd",user.getPassword());
         return "login";
+    }
+
+    @RequestMapping("/admin/add")
+    @RequiresPermissions("user:select")
+    public String AdminAdd(Model model) {
+        return "admin/add";
+    }
+
+    @RequestMapping("/logout")
+    public String logout() {
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
+        return "index";
     }
 }

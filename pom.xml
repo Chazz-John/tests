@@ -12,5 +12,7 @@
         <module>hello_shiro</module>
         <module>shiro-springboot</module>
         <module>shiro-springboot-mybatis</module>
+        <module>shiro-springboot-mybatis-authentication-Authorization</module>
+        <module>jwt</module>
     </modules>
 </project>

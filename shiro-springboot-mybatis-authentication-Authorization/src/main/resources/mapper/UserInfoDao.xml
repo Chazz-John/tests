@@ -11,4 +11,5 @@
     <insert id="addUserInfo" parameterType="com.zhao.shirospringboot.entity.UserInfo" keyProperty="userId">
         insert into user_info (user_name, PASSWORD, salt, state) values (#{userName},#{password},#{salt},#{state});
     </insert>
+
 </mapper>

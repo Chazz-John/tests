@@ -67,11 +67,16 @@ public class UserRealm extends AuthorizingRealm {
         //  hashedCredentials--数据库中对应用户的加密之后的密码
         //  credentialsSalt--org.apache.shiro.util.ByteSource 类型的salt,数据库中的salt可用ByteSource.Util.bytes()方法转化为对应类型的数据
         //  realmName -- 当前的realm对象
+        // SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(
+        //     user,
+        //     user.getPassword(),
+        //     ByteSource.Util.bytes(user.getSalt()),
+        //     this.getName());
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(
-            user,
+            "",
             user.getPassword(),
-            ByteSource.Util.bytes(user.getSalt()),
-            this.getName());
+            null,
+            "");
         System.out.println("info=>"+info);
         return info;
     }

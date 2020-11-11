@@ -37,4 +37,12 @@ public class UserInfo implements Serializable {
      * 状态（0：禁用；1：锁定；2：启用）
      */
     private Integer state;
+    /**
+     * 身份信息
+     * */
+    private String roleName;
+    /**
+     * 权限信息
+     * */
+    private String permission;
 }

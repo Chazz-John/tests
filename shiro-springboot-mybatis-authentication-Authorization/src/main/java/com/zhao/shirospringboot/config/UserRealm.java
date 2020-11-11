@@ -1,15 +1,20 @@
 package com.zhao.shirospringboot.config;
 
+import com.zhao.shirospringboot.dao.UserInfoDao;
 import com.zhao.shirospringboot.entity.UserInfo;
 import com.zhao.shirospringboot.service.UserInfoService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserRealm extends AuthorizingRealm {
+
+    @Autowired
+    UserInfoDao userInfoDao;
 
     @Autowired
     UserInfoService userInfoService;
@@ -20,7 +25,15 @@ public class UserRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         System.out.println("执行了授权操作->doGetAuthorizationInfo");
-        return null;
+        //创建一个身份授权类
+        SimpleAuthorizationInfo  authorization = new SimpleAuthorizationInfo();
+        //从principals中获取当前用户的全部信息
+        UserInfo userInfo = (UserInfo) principals.getPrimaryPrincipal();
+        //打印可以看到用户的所有信息
+        System.out.println(userInfo);
+        //将用户的授权信息交给shiro验证
+        authorization.addStringPermission(userInfo.getPermission());
+        return authorization;
     }
     /**
      * 认证
@@ -35,12 +48,10 @@ public class UserRealm extends AuthorizingRealm {
         //打印用户信息
         System.out.println("身份："+userToken);
         System.out.println("凭证："+userToken.getCredentials());
-
         //判断token是否为空
         if (userToken.getPrincipal()==null){
             return null;
         }
-
         //查询数据库对应的用户信息
         UserInfo user = userInfoService.findUserInfoByName(userToken.getUsername());
         System.out.printf("user=>"+user.toString());

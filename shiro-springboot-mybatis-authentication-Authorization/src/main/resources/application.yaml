@@ -29,8 +29,12 @@ spring:
     useGlobalDataSourceStat: true
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
 mybatis:
-  type-aliases-package: com.zhao.entity
+  type-aliases-package: com.zhao.shirospringboot.entity
   mapper-locations: classpath:mapper/*.xml
   #开启驼峰转下划线
   configuration:
     map-underscore-to-camel-case: true
+    #开启自动映射
+    auto-mapping-behavior: full
+server:
+  port: 8989

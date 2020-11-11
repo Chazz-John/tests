@@ -83,5 +83,4 @@ class ShiroSpringbootApplicationTests {
 		System.out.println("盐：" + userInfo.getSalt());
 	}
 
-
 }
